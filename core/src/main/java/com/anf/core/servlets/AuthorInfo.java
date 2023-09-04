@@ -4,6 +4,7 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
 import javax.jcr.Value;
@@ -46,17 +47,18 @@ public class AuthorInfo extends SlingSafeMethodsServlet {
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
             throws ServletException, IOException {
+        ResourceResolver requestResource=request.getResourceResolver(); 
         String extension = request.getRequestPathInfo().getExtension();
-        Resource pageResource = request.getResourceResolver().getResource(GlobalConstants.ANF_PAGE_PATH);
+        Resource pageResource = requestResource.getResource(GlobalConstants.ANF_PAGE_PATH);
         // Get the Page object from the resource
-        PageManager pageManager = request.getResourceResolver().adaptTo(PageManager.class);
+        PageManager pageManager = requestResource.adaptTo(PageManager.class);
         if (pageManager != null) {
-            Page page1 = pageManager.getContainingPage(pageResource);
-            LOGGER.info("page1{}",page1);
-            String parentPagelastModifiedBy = page1.getLastModifiedBy();
+            Page currentPage = pageManager.getContainingPage(pageResource);
+            LOGGER.info("page1{}",currentPage);
+            String parentPagelastModifiedBy = currentPage.getLastModifiedBy();
               LOGGER.info("parentPagelastModified{}",parentPagelastModifiedBy);
             // Getting the First Name and last name using user manager
-            List<String> userDetail = userDetails(request, parentPagelastModifiedBy);
+            List<String> userDetail = userDetails(requestResource, parentPagelastModifiedBy);
             List<String> pageTitles = getAllPageTitle(pageResource, pageManager, parentPagelastModifiedBy);
             if (GlobalConstants.JSON.equals(extension)) {
                 printJsonResponse(response, userDetail, pageTitles);
@@ -73,10 +75,10 @@ public class AuthorInfo extends SlingSafeMethodsServlet {
     }
 
     // Get the User First Name AND Last Name in this method
-    public List<String> userDetails(SlingHttpServletRequest request,
+    public List<String> userDetails(ResourceResolver requestResolver,
             String parentPagelastModifiedBy)
             throws IllegalStateException {
-        UserManager userManager = request.getResourceResolver().adaptTo(UserManager.class);
+        UserManager userManager = requestResolver.adaptTo(UserManager.class);
         Value[] firstName = null;
         Value[] lastName = null;
         List<String> username = new LinkedList<>();
