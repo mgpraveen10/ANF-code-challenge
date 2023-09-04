@@ -39,6 +39,7 @@ public class ComponentSearchBox extends SlingAllMethodsServlet {
 
     BufferedReader bufferedReader = request.getReader();
     String data = bufferedReader.readLine();
+    LOGGER.info("data from js::{}",data);
 
     // Get the Page object from the resource
     PageManager pageManager = request.getResourceResolver().adaptTo(PageManager.class);
