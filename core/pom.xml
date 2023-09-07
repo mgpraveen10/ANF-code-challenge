@@ -195,6 +195,12 @@ Import-Package: javax.annotation;version=0.0.0,*
             <classifier>apis</classifier>
         </dependency>
         <dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.24</version>
+    <scope>provided</scope>
+</dependency>
+        <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.models.api</artifactId>
         </dependency>

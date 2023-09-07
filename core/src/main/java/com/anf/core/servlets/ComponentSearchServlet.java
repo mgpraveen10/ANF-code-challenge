@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+//** Begin Code **//
+//**MG praveen *//
+
 @Component(service = { Servlet.class })
 @SlingServletPaths(value = "/bin/searchbox1")
 public class ComponentSearchServlet extends SlingSafeMethodsServlet {
@@ -96,3 +99,5 @@ public class ComponentSearchServlet extends SlingSafeMethodsServlet {
   }
 
 }
+
+//**END */

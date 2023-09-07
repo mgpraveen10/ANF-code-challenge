@@ -2,6 +2,9 @@ package com.anf.core.constants;
 
 import lombok.experimental.UtilityClass;
 
+//** Begin Code **//
+//**MG praveen *//
+
 @UtilityClass
 public final class GlobalConstants {
     
@@ -29,15 +32,7 @@ public final class GlobalConstants {
     public static final String APPLICATION_XML="application/xml";
     public static final String APPLICATION_JSON="application/json";
     public static final String PAGE_MANAGER_ERROR="PageManager is NULL";
-
-
-
-
-    
-    
-
-
-
-
 }
+
+//**END */
  

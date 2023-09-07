@@ -18,6 +18,9 @@ import com.anf.core.constants.GlobalConstants;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
+//** Begin Code **//
+//**MG praveen *//
+
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 class ComponentSearchBoxTest {
 	
@@ -51,3 +54,4 @@ class ComponentSearchBoxTest {
 	}
 
 }
+//**END */
