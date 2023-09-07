@@ -1,0 +1,49 @@
+
+
+  {
+    "jcr:primaryType": "cq:Page",
+    "jcr:content": {
+      "jcr:primaryType": "cq:PageContent",
+      "jcr:title": "Home Page",
+      "jcr:description": "This is a sample page.",
+      "text": "Welcome to our sample page. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "image": {
+        "jcr:primaryType": "nt:file",
+        "jcr:content": {
+          "jcr:primaryType": "nt:resource",
+          "jcr:data": "base64-encoded-image-data"
+        }
+      },
+      "activationStatus": "activated"
+    },
+    "childPage1": {
+      "jcr:primaryType": "cq:Page",
+      "jcr:content": {
+        "jcr:primaryType": "cq:PageContent",
+        "jcr:title": "Child Page 1",
+        "jcr:description": "This is the first child page.",
+        "text": "Content for Child Page 1."
+      }
+    },
+    "childPage2": {
+      "jcr:primaryType": "cq:Page",
+      "jcr:content": {
+        "jcr:primaryType": "cq:PageContent",
+        "jcr:title": "Child Page 2",
+        "jcr:description": "This is the second child page.",
+        "text": "Content for Child Page 2."
+      }
+    },
+    "childPage3": {
+      "jcr:primaryType": "cq:Page",
+      "jcr:content": {
+        "jcr:primaryType": "cq:PageContent",
+        "jcr:title": "Child Page 3",
+        "jcr:description": "This is the third child page.",
+        "text": "Content for Child Page 3.",
+        "cq:lastReplicationAction": "Activate",
+        "cq:lastReplicatedBy": "Admin",
+        "cq:lastReplicated": "2023-09-01T12:39:31.992+05:30"
+      }
+    }
+  }

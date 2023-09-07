@@ -1,12 +1,11 @@
 package com.anf.core.schedulers;
 
-
-
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-
+//** Begin Code **//
+//**MG praveen *//
 
 @ObjectClassDefinition(name = "ANF Scheduled Task",
         description = "Corn job to find published page once every two minutes" +
@@ -30,7 +29,7 @@ public @interface AnfSchedulerConfiguration {
             name = "Enable Scheduler",
             description = "Enable Scheduler",
             type = AttributeType.BOOLEAN)
-    boolean isSchedulerEnabled() default false;
+    boolean isSchedulerEnabled() default true;
 
     @AttributeDefinition(
             name = "Custom Property",
@@ -40,3 +39,4 @@ public @interface AnfSchedulerConfiguration {
 }
 
     
+//**END */

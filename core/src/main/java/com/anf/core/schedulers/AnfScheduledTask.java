@@ -1,6 +1,5 @@
 package com.anf.core.schedulers;
 
-import com.anf.core.constants.AppConstants;
 import com.anf.core.constants.GlobalConstants;
 import com.day.cq.replication.ReplicationStatus;
 import com.day.cq.wcm.api.Page;
@@ -12,14 +11,13 @@ import org.apache.sling.commons.scheduler.Scheduler;
 import org.joda.time.DateTime;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.metatype.annotations.Designate;
-
 import javax.jcr.Session;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-
+//** Begin Code **//
+//**MG praveen *//
 
 @Slf4j
 @Designate(ocd = AnfSchedulerConfiguration.class)
@@ -75,7 +73,7 @@ public class AnfScheduledTask implements Runnable {
 
     @Override
     public void run() {
-        log.info("runs every two minutes >>>>>>>>>>>");
+        log.info("runs every two minutes >>>>>>>>>>>{}","Running");
         findPublishedPages();
     }
 
@@ -99,7 +97,7 @@ public class AnfScheduledTask implements Runnable {
                 // Recursively check if all child pages are published
                 checkPublishedStatus(rootPage,resolver);
             } else {
-                log.error("Root page not found.");
+                log.error("Root page not found.{}","PageNotfound");
             }
         } catch (LoginException e) {
             log.error("Error getting page : {} ", e.getMessage());
@@ -134,3 +132,6 @@ public class AnfScheduledTask implements Runnable {
         }
     }
 }
+
+
+//**END */
