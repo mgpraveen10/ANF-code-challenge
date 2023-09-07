@@ -148,6 +148,17 @@ Import-Package: javax.annotation;version=0.0.0,*
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.resource</artifactId>
         </dependency>
+		-<dependency>
+
+<groupId>org.projectlombok</groupId>
+
+<artifactId>lombok</artifactId>
+
+<version>1.18.24</version>
+
+<scope>provided</scope>
+
+</dependency
         <!-- Other Dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>

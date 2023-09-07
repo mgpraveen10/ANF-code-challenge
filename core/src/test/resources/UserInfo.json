@@ -1,0 +1,7 @@
+{
+    "jcr:primaryType": "rep:User",
+    "rep:authorizableId": "praveen",
+    "profile/givenName": "John",
+    "profile/familyName": "Doe",
+    "profile/email": "john.doe@example.com"
+  }

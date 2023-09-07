@@ -2,9 +2,12 @@ package com.anf.core.constants;
 
 import lombok.experimental.UtilityClass;
 
+//** Begin Code **//
+//**MG praveen *//
+
 @UtilityClass
 public final class GlobalConstants {
-    
+    public static final String SUB_SERVICE="anfUser";
     public static final String ANF_PAGE_PATH="/content/anf-code-challenge/us/en";
     public static final String XML_INDENT_PATH="{http://xml.apache.org/xslt}indent-amount";
     public static final String JSON="json";
@@ -29,15 +32,7 @@ public final class GlobalConstants {
     public static final String APPLICATION_XML="application/xml";
     public static final String APPLICATION_JSON="application/json";
     public static final String PAGE_MANAGER_ERROR="PageManager is NULL";
-
-
-
-
-    
-    
-
-
-
+    public static final String  PROCESSED_DATA="processedDate";
 
 }
- 
+  //**END */

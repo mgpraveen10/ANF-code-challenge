@@ -1,0 +1,29 @@
+{
+    "jcr:primaryType": "cq:Page",
+    "jcr:content": {
+      "jcr:primaryType": "cq:PageContent",
+      "jcr:createdBy": "admin",
+	  "cq:lastModifiedBy": "praveen",
+      "jcr:title": "English",
+      "cq:template": "/conf/anf/test",
+      "sling:resourceType": "anf/test/components"
+    },
+    "testpage1": {
+      "jcr:primaryType": "cq:Page",
+      "jcr:content": {
+          "jcr:title": "Test Title 1",
+          "jcr:description": "Test description 1",
+		   "cq:lastModifiedBy": "admin",
+          "sling:resourceType": "anf/test/components"
+        }
+    },
+    "testpage2": {
+      "jcr:primaryType": "cq:Page",
+      "jcr:content": {
+          "jcr:title": "Test Title 2",
+          "jcr:description": "Test description 2",
+		   "cq:lastModifiedBy": "praveen",
+          "sling:resourceType": "anf/test/components"
+        }
+    }
+  }

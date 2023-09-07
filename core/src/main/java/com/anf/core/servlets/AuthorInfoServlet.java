@@ -3,10 +3,13 @@ package com.anf.core.servlets;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import javax.jcr.Value;
 import com.anf.core.constants.GlobalConstants;
 import com.day.cq.commons.jcr.JcrConstants;
@@ -29,9 +32,11 @@ import javax.xml.transform.stream.StreamResult;
 import org.json.JSONArray;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -40,37 +45,57 @@ import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 
+//** Begin Code **//
+//**MG praveen *//
+
 @Component(service = Servlet.class, property = { "sling.servlet.methods=get", "sling.servlet.paths=/bin/author" })
-public class AuthorInfo extends SlingSafeMethodsServlet {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorInfo.class);
+public class AuthorInfoServlet extends SlingSafeMethodsServlet {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorInfoServlet.class);
+
+    @Reference
+    transient ResourceResolverFactory resolverFactory;
 
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
             throws ServletException, IOException {
-        ResourceResolver requestResource=request.getResourceResolver(); 
-        String extension = request.getRequestPathInfo().getExtension();
-        Resource pageResource = requestResource.getResource(GlobalConstants.ANF_PAGE_PATH);
-        // Get the Page object from the resource
-        PageManager pageManager = requestResource.adaptTo(PageManager.class);
-        if (pageManager != null) {
-            Page currentPage = pageManager.getContainingPage(pageResource);
-            LOGGER.info("page1{}",currentPage);
-            String parentPagelastModifiedBy = currentPage.getLastModifiedBy();
-              LOGGER.info("parentPagelastModified{}",parentPagelastModifiedBy);
-            // Getting the First Name and last name using user manager
-            List<String> userDetail = userDetails(requestResource, parentPagelastModifiedBy);
-            List<String> pageTitles = getAllPageTitle(pageResource, pageManager, parentPagelastModifiedBy);
-            if (GlobalConstants.JSON.equals(extension)) {
-                printJsonResponse(response, userDetail, pageTitles);
-            } else if (GlobalConstants.XML.equals(extension)) {
-                printXmlResponse(response, userDetail, pageTitles);
-            } else {
-                // Handle unsupported extension
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write(GlobalConstants.UNSUPPORTED_ERROR + extension);
+        Map<String, Object> serviceUserMap = new HashMap<>();
+        serviceUserMap.put(ResourceResolverFactory.SUBSERVICE, GlobalConstants.SUB_SERVICE);
+        ResourceResolver requestResource;
+        try {
+            requestResource = resolverFactory.getServiceResourceResolver(serviceUserMap);
+            String extension = request.getRequestPathInfo().getExtension();
+            Resource pageResource = requestResource.getResource(GlobalConstants.ANF_PAGE_PATH);
+            // Get the Page object from the resource
+            PageManager pageManager = requestResource.adaptTo(PageManager.class);
+            if (pageManager != null) {
+                Page currentPage = pageManager.getContainingPage(pageResource);
+                LOGGER.info("page1{}", currentPage);
+                String parentPagelastModifiedBy = currentPage.getLastModifiedBy();
+                LOGGER.info("parentPagelastModified{}", parentPagelastModifiedBy);
+                // Getting the First Name and last name using user manager
+                List<String> userDetail = userDetails(requestResource, parentPagelastModifiedBy);
+                List<String> pageTitles = getAllPageTitle(pageResource, pageManager, parentPagelastModifiedBy);
+                if (GlobalConstants.JSON.equals(extension)) {
+
+                    printJsonResponse(response, userDetail, pageTitles);
+
+                } else if (GlobalConstants.XML.equals(extension)) {
+
+                    printXmlResponse(response, userDetail, pageTitles);
+
+                } else {
+                    // Handle unsupported extension
+                    // response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.setStatus(400);
+                    response.getWriter().write(GlobalConstants.UNSUPPORTED_ERROR + extension);
+                }
             }
-        } // Set the response content type to JSON
-        response.setContentType(GlobalConstants.APPLICATION_JSON);
+        } catch (LoginException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            // Set the response content type to JSON
+            response.setContentType(GlobalConstants.APPLICATION_JSON);
+        }
 
     }
 
@@ -92,6 +117,7 @@ public class AuthorInfo extends SlingSafeMethodsServlet {
                     User user = (User) authorizable;
                     firstName = user.getProperty(GlobalConstants.PROFILE_GIVEN_NAME);
                     lastName = user.getProperty(GlobalConstants.FAMILY_GIVEN_NAME);
+
                     username.add(firstName[0].getString());
                     username.add(lastName[0].getString());
                 }
@@ -128,7 +154,7 @@ public class AuthorInfo extends SlingSafeMethodsServlet {
         return pageTitleList;
     }
 
-    //Get the Output through Json Response 
+    // Get the Output through Json Response
     public void printJsonResponse(SlingHttpServletResponse response, List<String> userDetail, List<String> pageTitles)
             throws IOException {
         JSONObject jsonResponse = new JSONObject();
@@ -148,10 +174,9 @@ public class AuthorInfo extends SlingSafeMethodsServlet {
         response.getWriter().write(jsonResponse.toString());
     }
 
-
-      //Get the Output through XML Response 
+    // Get the Output through XML Response
     public void printXmlResponse(SlingHttpServletResponse response, List<String> userDetail, List<String> pageTitles)
-            throws IOException,TransformerFactoryConfigurationError {
+            throws IOException, TransformerFactoryConfigurationError {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -192,3 +217,4 @@ public class AuthorInfo extends SlingSafeMethodsServlet {
 
     }
 }
+//**END */
