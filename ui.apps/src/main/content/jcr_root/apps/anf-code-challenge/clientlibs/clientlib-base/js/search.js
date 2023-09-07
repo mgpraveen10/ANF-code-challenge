@@ -6,19 +6,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 async function FetchSubmit(e) {
   e.preventDefault();
-  var searchData = Seach_Box.text.value;
+  let search = Seach_Box.text.value;
+  let searchData= JSON.stringify({"textInput":search});
   console.log(searchData);
-
-  var response = await fetch("/bin/searchbox1", {
-    method: "POST",
-    body: searchData,
+  let response = await fetch("/bin/searchbox1?textInput="+search, {
+    method: "GET",
     headers: {
       "Content-type": "application/json; charset=UTF-8",
     },
   });
-  var output = await response.json();
+  let output = await response.json();
   console.log(output);
-  var contetelem = document.getElementById("jsonContent");
+  let contetelem = document.getElementById("jsonContent");
 
   let contentString = "";
   if (output.length == 0) {
