@@ -46,15 +46,15 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 
-//** Begin Code **//
-//**MG praveen *//
-
+/**
+ * author Praveen MG
+ **/
 @Component(service = Servlet.class, property = { "sling.servlet.methods=get", "sling.servlet.paths=/bin/author" })
 public class AuthorInfoServlet extends SlingSafeMethodsServlet {
 
 	private static final long serialVersionUID = 1L;
 	@Reference
-	transient ResourceResolverFactory resolverFactory;
+	private transient ResourceResolverFactory resolverFactory;
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuthorInfoServlet.class);
 
 	@Override
@@ -208,5 +208,3 @@ public class AuthorInfoServlet extends SlingSafeMethodsServlet {
 
 	}
 }
-
-  //**END */

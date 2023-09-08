@@ -74,7 +74,7 @@ class AuthorInfoServletTest {
 
 	@BeforeEach
 	public void setUp() throws LoginException, RepositoryException {
-		Resource pageResource = context.load().json("/AuthorInfoTest.json", "/content/anf-code-challenge/us/en");
+		Resource pageResource = context.load().json("/AuthorInfoServletTest.json", "/content/anf-code-challenge/us/en");
 		Page page = pageResource.adaptTo(Page.class);
 		Page childPage = pageResource.getChild(TEST_CHILD_PAGE).adaptTo(Page.class);
 
@@ -108,7 +108,7 @@ class AuthorInfoServletTest {
 
 	@Test
 	void testDoGetJSON() throws ServletException, IOException {
-		context.requestPathInfo().setExtension("json");
+		context.requestPathInfo().setExtension(GlobalConstants.JSON);
 		authorInfoServlet.doGet(request, response);
 		String outputString = response.getOutputAsString();
 		JsonObject outputJSON = new Gson().fromJson(outputString, JsonObject.class);
@@ -117,14 +117,11 @@ class AuthorInfoServletTest {
 
 	@Test
 	void testDoGetXML() throws ServletException, IOException {
-		context.requestPathInfo().setExtension("xml");
+		context.requestPathInfo().setExtension(GlobalConstants.XML);
 		authorInfoServlet.doGet(request, response);
 		String outputString = response.getOutputAsString();
 		assertTrue(outputString.contains("Test Title 1"));
 		assertFalse(outputString.contains("Test Title 3"));
 
 	}
-
 }
-
-// **END */

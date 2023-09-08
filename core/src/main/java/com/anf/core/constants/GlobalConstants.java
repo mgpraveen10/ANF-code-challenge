@@ -1,9 +1,9 @@
 package com.anf.core.constants;
 
 import lombok.experimental.UtilityClass;
-
-//** Begin Code **//
-//**MG praveen *//
+/**
+ * author Praveen MG
+ **/
 
 @UtilityClass
 public final class GlobalConstants {
@@ -24,7 +24,6 @@ public final class GlobalConstants {
     public static final String TITLE="title";
     public static final String DESCRIPTION="description";
     public static final String LASTMODIFIED="lastModified";
-
     public static final String RESPONSE="response";
     public static final String XML_RESPONSE_ERROR="Error generating XML response";
     public static final String INTEGER_VALUE_STRING="2";
@@ -33,6 +32,4 @@ public final class GlobalConstants {
     public static final String APPLICATION_JSON="application/json";
     public static final String PAGE_MANAGER_ERROR="PageManager is NULL";
     public static final String  PROCESSED_DATA="processedDate";
-
 }
-  //**END */
