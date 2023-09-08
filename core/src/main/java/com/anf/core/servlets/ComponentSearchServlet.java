@@ -24,11 +24,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-//** Begin Code **//
-//**MG praveen *//
+/**
+ * author Praveen MG
+ **/
 
 @Component(service = { Servlet.class })
-@SlingServletPaths(value = "/bin/searchbox1")
+@SlingServletPaths(value = "/bin/searchbox")
 public class ComponentSearchServlet extends SlingSafeMethodsServlet {
   private static final long serialVersionUID = 1L;
   private static Logger LOGGER = LoggerFactory.getLogger(ComponentSearchServlet.class);
@@ -62,7 +63,6 @@ public class ComponentSearchServlet extends SlingSafeMethodsServlet {
       LOGGER.error("Exception in doGet Method {}", e.getMessage());
       response.sendError(SC_BAD_REQUEST, e.getMessage());
     }
-
   }
 
   public List<JSONObject> getDetails(String data, Iterator<Page> rootPageIterator, List<JSONObject> responses) {
@@ -78,13 +78,11 @@ public class ComponentSearchServlet extends SlingSafeMethodsServlet {
         resp.put(GlobalConstants.LASTMODIFIED, pageProperties.get(JcrConstants.JCR_LASTMODIFIED, String.class));
         getImage(resp, childPage);
         responses.add(resp);
-      } catch (Exception e) {
-        LOGGER.info("Null{}", e.getMessage());
+      } catch (JSONException e) {
+        LOGGER.error("Exception while Getting Page Details {}", e.getMessage());
       }
     }
-
     return responses;
-
   }
 
   public JSONObject getImage(JSONObject resp, Page childPage) throws JSONException {
@@ -96,7 +94,4 @@ public class ComponentSearchServlet extends SlingSafeMethodsServlet {
     }
     return resp;
   }
-
 }
-
-// **END */

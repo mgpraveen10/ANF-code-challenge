@@ -1,5 +1,6 @@
 package com.anf.core.servlets;
 
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
@@ -17,15 +18,15 @@ import com.anf.core.constants.GlobalConstants;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
-//** Begin Code **//
-//**MG praveen *//
+/**
+ * author Praveen MG
+ **/
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
-class ComponentSearchBoxTest {
+class ComponentSearchServletTest {
 
 	@InjectMocks
 	private ComponentSearchServlet componentSearchBoxServlet;
-
 	private MockSlingHttpServletRequest mockRequest;
 	private MockSlingHttpServletResponse mockResponse;
 	private Map<String, Object> servletParamMap = new HashMap<>();
@@ -40,7 +41,7 @@ class ComponentSearchBoxTest {
 	@Test
 	void testDoGetWithoutParams() throws IOException {
 		componentSearchBoxServlet.doGet(mockRequest, mockResponse);
-		assertEquals(400, mockResponse.getStatus());
+		assertEquals(SC_BAD_REQUEST, mockResponse.getStatus());
 	}
 
 	@Test
@@ -51,7 +52,4 @@ class ComponentSearchBoxTest {
 		assertNotNull(mockResponse.getOutputAsString());
 
 	}
-
 }
-
-// **END */

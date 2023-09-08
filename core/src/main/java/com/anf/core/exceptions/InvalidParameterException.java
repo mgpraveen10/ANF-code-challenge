@@ -1,9 +1,8 @@
 package com.anf.core.exceptions;
 
-//** Begin Code **//
-//**MG praveen *//
-
-
+/**
+ * author Praveen MG
+ **/
 public class InvalidParameterException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     public InvalidParameterException(String errorMessage) { 
@@ -11,4 +10,3 @@ public class InvalidParameterException extends RuntimeException {
     }
 
 }
-//**END */
