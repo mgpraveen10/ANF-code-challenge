@@ -1,16 +1,22 @@
 package com.anf.core.servlets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.servlet.ServletException;
-
+import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,126 +24,106 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.anf.core.constants.GlobalConstants;
+import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
+// **** Begin code - M G Praveen **** //
 
-//** Begin Code **//
-//**MG praveen *//
-
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class AuthorInfoServletTest {
 	
 	@InjectMocks
-	private AuthorInfoServlet authorInfo;
-
-    Resource pagResource;
-	private MockSlingHttpServletRequest mockRequest;
-	private MockSlingHttpServletResponse mockResponse;
+	AuthorInfoServlet authorInfoServlet;
 	
-    
-	AemContext aemContext=new AemContext();
-    AuthorInfoServlet author = Mockito.mock(AuthorInfoServlet.class);
-
-    @Mock
-    UserManager userManager;
-   
+	@Mock
+    private ResourceResolverFactory resourceResolverFactory;
+	
+	@Mock
+	private ResourceResolver resourceResolver;
+	
+	@Mock
+	private UserManager userManager;
+	
+	@Mock
+	private Authorizable authorizable;
+	
+	@Mock
+	private User user;
+	
+	AemContext context = new AemContext();
+	
+	MockSlingHttpServletRequest request;
+	MockSlingHttpServletResponse response;
+	
+	@Mock
+	private PageManager pageManager;
+	
+	@Mock
+	private Value value;
+	
+	private static final String TEST_CHILD_PAGE = "testpage1";
+	private static final String TEST_USER = "admin";
+	
 	@BeforeEach
-	void setUp(AemContext context) throws LoginException {
-      pagResource=context.load().json("/AuthorInfoTest.json", GlobalConstants.ANF_PAGE_PATH);
-         context.load().json("/UserInfo.json", "/home/users/testuser");
-		mockRequest = context.request();
-		mockResponse = context.response();
+	public void setUp() throws LoginException, RepositoryException {
+		Resource pageResource = context.load().json("/AuthorInfoTest.json", "/content/anf-code-challenge/us/en");
+		Page page = pageResource.adaptTo(Page.class);
+		Page childPage = pageResource.getChild(TEST_CHILD_PAGE).adaptTo(Page.class);
+		
+		Map<String, Object> serviceUserMap = new HashMap<>();
+		serviceUserMap.put(ResourceResolverFactory.SUBSERVICE, GlobalConstants.SUB_SERVICE);	
+		lenient().when(resourceResolverFactory.getServiceResourceResolver(serviceUserMap)).thenReturn(resourceResolver);
+		lenient().when(resourceResolver.getResource(GlobalConstants.ANF_PAGE_PATH)).thenReturn(pageResource);
+		lenient().when(resourceResolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+		lenient().when(pageManager.getContainingPage(pageResource)).thenReturn(page);
+		lenient().when(pageManager.getContainingPage(pageResource.getChild(JcrConstants.JCR_CONTENT))).thenReturn(null);
+		lenient().when(pageManager.getContainingPage(pageResource.getChild(TEST_CHILD_PAGE))).thenReturn(childPage);
+		
+		lenient().when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+		
+		lenient().when(user.hasProperty(GlobalConstants.PROFILE_GIVEN_NAME)).thenReturn(Boolean.TRUE);
+		lenient().when(user.hasProperty(GlobalConstants.FAMILY_GIVEN_NAME)).thenReturn(Boolean.TRUE);
+		
+		Value[] valueArr = new Value[1];
+		valueArr[0] = value;
+		
+		lenient().when(user.getProperty(GlobalConstants.PROFILE_GIVEN_NAME)).thenReturn(valueArr);
+		lenient().when(user.getProperty(GlobalConstants.FAMILY_GIVEN_NAME)).thenReturn(valueArr);
+		lenient().when(valueArr[0].getString()).thenReturn(TEST_USER);
+		
+		lenient().when(userManager.getAuthorizable(TEST_USER)).thenReturn(user);
+				
+		request = context.request();
+        response = context.response();
+        
 	}
-
 
 	@Test
-	void testDoGetWithJson() throws IOException, ServletException,IllegalStateException {     
-        aemContext.requestPathInfo().setExtension("json");
-        List <String> User=new LinkedList<>();
-        User.add("praveen");
-        User.add("mg");
-      
-        lenient().when(author.userDetails(aemContext.resourceResolver(), "praveen")).thenReturn(User);
-		author.doGet(aemContext.request(), aemContext.response());
-         assertEquals("json", aemContext.request().getRequestPathInfo().getExtension());
-         assertNotNull(aemContext.response().getOutputAsString());
-         System.out.println(aemContext.response().getOutputAsString());
-
-      
-       
-	}
-    @Test
-	void testDoGetWithXml() throws IOException, ServletException,IllegalStateException {     
-        aemContext.requestPathInfo().setExtension("xml");
-        List <String> User=new LinkedList<>();
-        User.add("praveen");
-        User.add("mg");
-        lenient().when(author.userDetails(aemContext.resourceResolver(), "praveen")).thenReturn(User);
-		author.doGet(aemContext.request(), aemContext.response());
-         assertEquals("xml", aemContext.request().getRequestPathInfo().getExtension());
-         assertNotNull(aemContext.response().getOutputAsString());
-       
-	}
-    	@Test
-	void testDoGetWithoutExtension() throws IOException, ServletException {
-        aemContext.requestPathInfo().setExtension(null);
-         List <String> User=new LinkedList<>();
-        User.add("praveen");
-        User.add("mg");
-        lenient().when(author.userDetails(aemContext.resourceResolver(), "praveen")).thenReturn(User);
-		author.doGet(aemContext.request(), aemContext.response());
-		assertEquals(200, mockResponse.getStatus());
+	void testDoGetJSON() throws ServletException, IOException {
+		context.requestPathInfo().setExtension("json");
+		authorInfoServlet.doGet(request, response);
+		String outputString = response.getOutputAsString();
+		JsonObject outputJSON = new Gson().fromJson(outputString, JsonObject.class);
+		assertEquals("[\"Test Title 1\",\"Test Title 2\"]", outputJSON.get("PageTitles").toString());
 	}
 	
-    
-
-    @Test
-	void printJsonResponseTest() throws IOException, ServletException,IllegalStateException {
-        List<String>userDetail=new LinkedList<>();
-        List<String>pageTitles=new LinkedList<>();
-        String expectedValue="{\"FirstName\":\"praveen\",\"LastName\":\"mg\",\"PageTitles\":[\"English\",\"Test page 2\"]}";
-        userDetail.add("praveen");
-        userDetail.add("mg");
-        pageTitles.add("English");
-        pageTitles.add("Test page 2");
-        authorInfo.printJsonResponse(mockResponse, userDetail, pageTitles);
-        assertEquals( expectedValue,mockResponse.getOutputAsString());
-    }
-
-     @Test
-	void printXmlResponseTest() throws IOException, ServletException,IllegalStateException {
-        List<String>userDetail=new LinkedList<>();
-        List<String>pageTitles=new LinkedList<>();
-        String expectedValue="<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\r\n" + //
-                "<response>\r\n" + //
-                "  <FirstName>praveen</FirstName>\r\n" + //
-                "  <LastName>mg</LastName>\r\n" + //
-                "  <PageTitles>\r\n" + //
-                "    <Page>English</Page>\r\n" + //
-                "    <Page>Test page 2</Page>\r\n" + //
-                "  </PageTitles>\r\n" + //
-                "</response>\r\n";
-        userDetail.add("praveen");
-        userDetail.add("mg");
-        pageTitles.add("English");
-        pageTitles.add("Test page 2");
-        authorInfo.printXmlResponse(mockResponse, userDetail, pageTitles);
-        assertEquals( expectedValue,mockResponse.getOutputAsString());
-    }
-
-    @Test
-	void getAllPageTitleTest() throws IOException, ServletException,IllegalStateException {
-        List <String> pages=new LinkedList<>();
-        pages.add("English");
-        pages.add("Test Title 2");
-        assertEquals(pages,authorInfo.getAllPageTitle(pagResource,aemContext.pageManager(),"praveen"));
-        
-    }
- 
+	@Test
+	void testDoGetXML() throws ServletException, IOException {
+		context.requestPathInfo().setExtension("xml");
+		authorInfoServlet.doGet(request, response);
+		String outputString = response.getOutputAsString();
+		assertTrue(outputString.contains("Test Title 1"));
+		assertFalse(outputString.contains("Test Title 3"));
+		
+	}
 
 }
-//**END */
+
+// *** END CODE ***//
