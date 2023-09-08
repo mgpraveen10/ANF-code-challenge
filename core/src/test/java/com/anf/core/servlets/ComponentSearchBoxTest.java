@@ -2,7 +2,6 @@ package com.anf.core.servlets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,16 +20,16 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 //** Begin Code **//
 //**MG praveen *//
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class ComponentSearchBoxTest {
-	
+
 	@InjectMocks
 	private ComponentSearchServlet componentSearchBoxServlet;
 
 	private MockSlingHttpServletRequest mockRequest;
 	private MockSlingHttpServletResponse mockResponse;
 	private Map<String, Object> servletParamMap = new HashMap<>();
-	
+
 	@BeforeEach
 	void setUp(AemContext context) throws LoginException {
 		context.load().json("/ComponentSearchBoxServletTest.json", GlobalConstants.ANF_PAGE_PATH);
@@ -43,7 +42,7 @@ class ComponentSearchBoxTest {
 		componentSearchBoxServlet.doGet(mockRequest, mockResponse);
 		assertEquals(400, mockResponse.getStatus());
 	}
-	
+
 	@Test
 	void testDoGetWithParams() throws IOException {
 		servletParamMap.put("textInput", "Test");
@@ -54,4 +53,5 @@ class ComponentSearchBoxTest {
 	}
 
 }
-//**END */
+
+// **END */

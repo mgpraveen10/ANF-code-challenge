@@ -1,6 +1,6 @@
 package com.anf.core.servlets;
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -14,7 +14,6 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
-
 import com.anf.core.constants.GlobalConstants;
 import com.anf.core.exceptions.InvalidParameterException;
 import com.day.cq.commons.jcr.JcrConstants;
@@ -37,40 +36,40 @@ public class ComponentSearchServlet extends SlingSafeMethodsServlet {
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
 
-		String textInput = request.getParameter("textInput");
-		ResourceResolver resourceResolver = request.getResourceResolver();
+    String textInput = request.getParameter("textInput");
+    ResourceResolver resourceResolver = request.getResourceResolver();
 
-		try {
-			if(textInput == null) 
-				throw new InvalidParameterException("textInput parameter is required");
+    try {
+      if (textInput == null)
+        throw new InvalidParameterException("textInput parameter is required");
 
-			// Get the Page object from the resource
-			Resource rootPageResource = resourceResolver.getResource(GlobalConstants.ANF_PAGE_PATH);
-			if (rootPageResource != null) {
-				
-				Page rootPage = rootPageResource.adaptTo(Page.class);
-				List<JSONObject> jsonResponse = new ArrayList<>();
-				
-				Iterator<Page> rootPageIterator = rootPage.listChildren(null, true);
-				while (rootPageIterator.hasNext()) {
-					getDetails(textInput, rootPageIterator, jsonResponse);
-				}
-				response.getWriter().print(jsonResponse);
-			} else {
-				response.getWriter().write(GlobalConstants.PAGE_MANAGER_ERROR);
-			}
-		} catch(InvalidParameterException e) {
-			LOGGER.error("Exception in doGet Method {}", e.getMessage());
-			response.sendError(SC_BAD_REQUEST, e.getMessage());
-		}
+      // Get the Page object from the resource
+      Resource rootPageResource = resourceResolver.getResource(GlobalConstants.ANF_PAGE_PATH);
+      if (rootPageResource != null) {
 
-	}
+        Page rootPage = rootPageResource.adaptTo(Page.class);
+        List<JSONObject> jsonResponse = new ArrayList<>();
+
+        Iterator<Page> rootPageIterator = rootPage.listChildren(null, true);
+        while (rootPageIterator.hasNext()) {
+          getDetails(textInput, rootPageIterator, jsonResponse);
+        }
+        response.getWriter().print(jsonResponse);
+      } else {
+        response.getWriter().write(GlobalConstants.PAGE_MANAGER_ERROR);
+      }
+    } catch (InvalidParameterException e) {
+      LOGGER.error("Exception in doGet Method {}", e.getMessage());
+      response.sendError(SC_BAD_REQUEST, e.getMessage());
+    }
+
+  }
 
   public List<JSONObject> getDetails(String data, Iterator<Page> rootPageIterator, List<JSONObject> responses) {
     Page childPage = rootPageIterator.next();
-    ValueMap pageProperties = childPage.getProperties(); 
-		String pageTitle = pageProperties.get(JcrConstants.JCR_TITLE, StringUtils.EMPTY);
-		String pageDesc = pageProperties.get(JcrConstants.JCR_DESCRIPTION, StringUtils.EMPTY);
+    ValueMap pageProperties = childPage.getProperties();
+    String pageTitle = pageProperties.get(JcrConstants.JCR_TITLE, StringUtils.EMPTY);
+    String pageDesc = pageProperties.get(JcrConstants.JCR_DESCRIPTION, StringUtils.EMPTY);
     if (pageTitle.contains(data) || pageDesc.contains(data)) {
       JSONObject resp = new JSONObject();
       try {
@@ -100,4 +99,4 @@ public class ComponentSearchServlet extends SlingSafeMethodsServlet {
 
 }
 
-//**END */
+// **END */
