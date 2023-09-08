@@ -1,13 +1,13 @@
-package com.anf.core.schedulers;
+package com.anf.core.schedulers.config;
 
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-//** Begin Code **//
-//**MG praveen *//
-
-@ObjectClassDefinition(name = "ANF Scheduled Task",
+/**
+ * author Praveen MG
+ **/
+@ObjectClassDefinition( name = "ANF Scheduled Task",
         description = "Corn job to find published page once every two minutes" +
                 " and set property processedDate to current time ")
 public @interface AnfSchedulerConfiguration {
@@ -37,6 +37,3 @@ public @interface AnfSchedulerConfiguration {
             type = AttributeType.STRING)
     String customProperty() default "Test";
 }
-
-    
-//**END */

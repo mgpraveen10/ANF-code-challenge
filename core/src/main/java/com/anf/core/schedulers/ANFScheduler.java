@@ -1,6 +1,8 @@
 package com.anf.core.schedulers;
 
 import com.anf.core.constants.GlobalConstants;
+import com.anf.core.schedulers.config.AnfSchedulerConfiguration;
+import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.replication.ReplicationStatus;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
@@ -16,24 +18,24 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-//** Begin Code **//
-//**MG praveen *//
+
+/**
+ * author Praveen MG
+ **/
 
 @Slf4j
 @Designate(ocd = AnfSchedulerConfiguration.class)
 @Component(service = Runnable.class, property = {"sling.run.modes=author"})
-public class AnfScheduledTask implements Runnable {
+public class ANFScheduler implements Runnable {
 
     @Reference
-    Scheduler scheduler;
+    private transient Scheduler scheduler;
 
     @Reference
-    ResourceResolverFactory resolverFactory;
-
+    private transient ResourceResolverFactory resolverFactory;
 
     @Activate
     protected void activate(final AnfSchedulerConfiguration config) {
-
         // Execute this method to add scheduler.
         addScheduler(config);
 
@@ -79,25 +81,21 @@ public class AnfScheduledTask implements Runnable {
 
     private void findPublishedPages() {
          Map<String, Object> serviceUserMap = new HashMap<>();
-            serviceUserMap.put(ResourceResolverFactory.SUBSERVICE,GlobalConstants.SUB_SERVICE);
+         serviceUserMap.put(ResourceResolverFactory.SUBSERVICE,GlobalConstants.SUB_SERVICE);
           
 
-        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(serviceUserMap);
-        ) {
+        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(serviceUserMap);) {
            
-// Get the PageManager to work with pages
-            PageManager pageManager = resolver.adaptTo(PageManager.class);
-
-            // Define the path to the root of your website
-            String siteRootPath =GlobalConstants.ANF_PAGE_PATH; // Replace with your actual path
+            // Get the PageManager to work with pages
+            PageManager pageManager = resolver.adaptTo(PageManager.class);            
 
             // Get the root page
-            Page rootPage = pageManager.getPage(siteRootPath);
+            Page rootPage = pageManager.getPage(GlobalConstants.ANF_PAGE_PATH);
             if (rootPage != null) {
                 // Recursively check if all child pages are published
                 checkPublishedStatus(rootPage,resolver);
             } else {
-                log.error("Root page not found.{}","PageNotfound");
+                log.error("Root page not found");
             }
         } catch (LoginException e) {
             log.error("Error getting page : {} ", e.getMessage());
@@ -105,19 +103,17 @@ public class AnfScheduledTask implements Runnable {
     }
 
     // Recursively check the published status of child pages
-    private void checkPublishedStatus(Page page,ResourceResolver resolver) {
+    private void checkPublishedStatus(Page page , ResourceResolver resolver) {
         if (page != null) {
             ReplicationStatus replicationStatus = page.adaptTo(ReplicationStatus.class);
-
-            Session session = resolver.adaptTo(Session.class);
+       
             try {
                 if (replicationStatus.isActivated()) {
                     DateTime dateTime = new DateTime();
-                    Resource resource=resolver.getResource(page.getPath()+"/jcr:content");
+                    Resource resource = resolver.getResource(page.getPath() + " / " + JcrConstants.JCR_CONTENT);
                     ModifiableValueMap valueMap = resource.adaptTo(ModifiableValueMap.class);
                     valueMap.put(GlobalConstants.PROCESSED_DATA, dateTime.toLocalDateTime().toString());
-                    // Handle the case where the page is not published
-                    session.save();
+                    resolver.commit();
                 }
             } catch (Exception e) {
                 log.error("Exception saving processedDate {} ", e);
@@ -127,11 +123,8 @@ public class AnfScheduledTask implements Runnable {
             Iterator<Page> childPages = page.listChildren();
             while (childPages.hasNext()) {
                 Page childPage = childPages.next();
-                checkPublishedStatus(childPage,resolver);
+                checkPublishedStatus( childPage , resolver );
             }
         }
     }
 }
-
-
-//**END */
