@@ -1,0 +1,41 @@
+{
+  "jcr:primaryType": "cq:Page",
+  "jcr:content": {
+    "jcr:primaryType": "cq:PageContent",
+    "jcr:createdBy": "admin",
+    "jcr:title": "English",
+    "cq:template": "/conf/anf/test",
+    "sling:resourceType": "anf/test/components",
+    "cq:lastModifiedBy": "admin"
+  },
+  "testpage1": {
+    "jcr:primaryType": "cq:Page",
+    "jcr:content": {
+    	"jcr:primaryType": "cq:PageContent",
+    	"cq:lastModifiedBy": "admin",
+    	"jcr:title": "Test Title 1",
+    	"jcr:description": "Test description 1",
+    	"sling:resourceType": "anf/test/components"
+  	}
+  },
+    "testpage2": {
+    "jcr:primaryType": "cq:Page",
+    "jcr:content": {
+    	"jcr:primaryType": "cq:PageContent",
+    	"cq:lastModifiedBy": "admin",
+    	"jcr:title": "Test Title 2",
+    	"jcr:description": "Test description 1",
+    	"sling:resourceType": "anf/test/components"
+  	}
+  },
+    "testpage3": {
+    "jcr:primaryType": "cq:Page",
+    "jcr:content": {
+    	"jcr:primaryType": "cq:PageContent",
+    	"cq:lastModifiedBy": "Praveen",
+    	"jcr:title": "Test Title 3",
+    	"jcr:description": "Test description 1",
+    	"sling:resourceType": "anf/test/components"
+  	}
+  }
+}
