@@ -46,10 +46,12 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 
+//** Begin Code **//
+//**MG praveen *//
+
 @Component(service = Servlet.class, property = { "sling.servlet.methods=get", "sling.servlet.paths=/bin/author" })
 public class AuthorInfoServlet extends SlingSafeMethodsServlet {
 
-	// **** Begin code - M G Praveen **** //
 	private static final long serialVersionUID = 1L;
 	@Reference
 	transient ResourceResolverFactory resolverFactory;
@@ -62,10 +64,10 @@ public class AuthorInfoServlet extends SlingSafeMethodsServlet {
 		Map<String, Object> serviceUserMap = new HashMap<>();
 		serviceUserMap.put(ResourceResolverFactory.SUBSERVICE, GlobalConstants.SUB_SERVICE);
 
-		try(ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(serviceUserMap)) {
+		try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(serviceUserMap)) {
 
 			String extension = request.getRequestPathInfo().getExtension();
-			if(StringUtils.isBlank(extension))
+			if (StringUtils.isBlank(extension))
 				throw new InvalidParameterException("Only JSON or XML extensions are valid");
 
 			Resource pageResource = resourceResolver.getResource(GlobalConstants.ANF_PAGE_PATH);
@@ -82,8 +84,8 @@ public class AuthorInfoServlet extends SlingSafeMethodsServlet {
 					response.getWriter().write(printJsonResponse(response, userDetail, pageTitles));
 				} else if (GlobalConstants.XML.equals(extension)) {
 					printXmlResponse(response, userDetail, pageTitles);
-				} 
-			} 
+				}
+			}
 
 		} catch (InvalidParameterException e) {
 			LOGGER.error("Exception in doGet Method {}", e.getMessage());
@@ -95,7 +97,8 @@ public class AuthorInfoServlet extends SlingSafeMethodsServlet {
 	}
 
 	// Get the User First Name AND Last Name in this method
-	private List<String> userDetails(ResourceResolver requestResolver, String parentPagelastModifiedBy) throws IllegalStateException {
+	private List<String> userDetails(ResourceResolver requestResolver, String parentPagelastModifiedBy)
+			throws IllegalStateException {
 		UserManager userManager = requestResolver.adaptTo(UserManager.class);
 		Value[] firstName = null;
 		Value[] lastName = null;
@@ -124,9 +127,9 @@ public class AuthorInfoServlet extends SlingSafeMethodsServlet {
 	{
 		List<String> pageTitleList = new LinkedList<>();
 		Iterator<Resource> resourceIterator = pageResource.listChildren();
-		while(resourceIterator.hasNext()) {
+		while (resourceIterator.hasNext()) {
 			Resource childPageResource = resourceIterator.next();
-			if(null != childPageResource) {
+			if (null != childPageResource) {
 				Page page = childPageResource.adaptTo(Page.class);
 				if (null != page) {
 					final Resource contentResource = page.getContentResource();
@@ -142,8 +145,9 @@ public class AuthorInfoServlet extends SlingSafeMethodsServlet {
 		return pageTitleList;
 	}
 
-	//Get the Output through Json Response 
-	private String printJsonResponse(SlingHttpServletResponse response, List<String> userDetail, List<String> pageTitles) {
+	// Get the Output through Json Response
+	private String printJsonResponse(SlingHttpServletResponse response, List<String> userDetail,
+			List<String> pageTitles) {
 		JSONObject jsonResponse = new JSONObject();
 		response.setContentType(GlobalConstants.APPLICATION_JSON);
 		try {
@@ -161,10 +165,9 @@ public class AuthorInfoServlet extends SlingSafeMethodsServlet {
 		return jsonResponse.toString();
 	}
 
-
-	//Get the Output through XML Response 
+	// Get the Output through XML Response
 	private void printXmlResponse(SlingHttpServletResponse response, List<String> userDetail, List<String> pageTitles)
-			throws IOException,TransformerFactoryConfigurationError {
+			throws IOException, TransformerFactoryConfigurationError {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -206,4 +209,4 @@ public class AuthorInfoServlet extends SlingSafeMethodsServlet {
 	}
 }
 
-// *** END CODE ***//
+  //**END */

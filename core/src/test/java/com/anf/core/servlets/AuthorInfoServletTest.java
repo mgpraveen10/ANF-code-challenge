@@ -34,75 +34,76 @@ import com.google.gson.JsonObject;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
-// **** Begin code - M G Praveen **** //
+//** Begin Code **//
+//**MG praveen *//
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class AuthorInfoServletTest {
-	
+
 	@InjectMocks
 	AuthorInfoServlet authorInfoServlet;
-	
+
 	@Mock
-    private ResourceResolverFactory resourceResolverFactory;
-	
+	private ResourceResolverFactory resourceResolverFactory;
+
 	@Mock
 	private ResourceResolver resourceResolver;
-	
+
 	@Mock
 	private UserManager userManager;
-	
+
 	@Mock
 	private Authorizable authorizable;
-	
+
 	@Mock
 	private User user;
-	
+
 	AemContext context = new AemContext();
-	
+
 	MockSlingHttpServletRequest request;
 	MockSlingHttpServletResponse response;
-	
+
 	@Mock
 	private PageManager pageManager;
-	
+
 	@Mock
 	private Value value;
-	
+
 	private static final String TEST_CHILD_PAGE = "testpage1";
 	private static final String TEST_USER = "admin";
-	
+
 	@BeforeEach
 	public void setUp() throws LoginException, RepositoryException {
 		Resource pageResource = context.load().json("/AuthorInfoTest.json", "/content/anf-code-challenge/us/en");
 		Page page = pageResource.adaptTo(Page.class);
 		Page childPage = pageResource.getChild(TEST_CHILD_PAGE).adaptTo(Page.class);
-		
+
 		Map<String, Object> serviceUserMap = new HashMap<>();
-		serviceUserMap.put(ResourceResolverFactory.SUBSERVICE, GlobalConstants.SUB_SERVICE);	
+		serviceUserMap.put(ResourceResolverFactory.SUBSERVICE, GlobalConstants.SUB_SERVICE);
 		lenient().when(resourceResolverFactory.getServiceResourceResolver(serviceUserMap)).thenReturn(resourceResolver);
 		lenient().when(resourceResolver.getResource(GlobalConstants.ANF_PAGE_PATH)).thenReturn(pageResource);
 		lenient().when(resourceResolver.adaptTo(PageManager.class)).thenReturn(pageManager);
 		lenient().when(pageManager.getContainingPage(pageResource)).thenReturn(page);
 		lenient().when(pageManager.getContainingPage(pageResource.getChild(JcrConstants.JCR_CONTENT))).thenReturn(null);
 		lenient().when(pageManager.getContainingPage(pageResource.getChild(TEST_CHILD_PAGE))).thenReturn(childPage);
-		
+
 		lenient().when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
-		
+
 		lenient().when(user.hasProperty(GlobalConstants.PROFILE_GIVEN_NAME)).thenReturn(Boolean.TRUE);
 		lenient().when(user.hasProperty(GlobalConstants.FAMILY_GIVEN_NAME)).thenReturn(Boolean.TRUE);
-		
+
 		Value[] valueArr = new Value[1];
 		valueArr[0] = value;
-		
+
 		lenient().when(user.getProperty(GlobalConstants.PROFILE_GIVEN_NAME)).thenReturn(valueArr);
 		lenient().when(user.getProperty(GlobalConstants.FAMILY_GIVEN_NAME)).thenReturn(valueArr);
 		lenient().when(valueArr[0].getString()).thenReturn(TEST_USER);
-		
+
 		lenient().when(userManager.getAuthorizable(TEST_USER)).thenReturn(user);
-				
+
 		request = context.request();
-        response = context.response();
-        
+		response = context.response();
+
 	}
 
 	@Test
@@ -113,7 +114,7 @@ class AuthorInfoServletTest {
 		JsonObject outputJSON = new Gson().fromJson(outputString, JsonObject.class);
 		assertEquals("[\"Test Title 1\",\"Test Title 2\"]", outputJSON.get("PageTitles").toString());
 	}
-	
+
 	@Test
 	void testDoGetXML() throws ServletException, IOException {
 		context.requestPathInfo().setExtension("xml");
@@ -121,9 +122,9 @@ class AuthorInfoServletTest {
 		String outputString = response.getOutputAsString();
 		assertTrue(outputString.contains("Test Title 1"));
 		assertFalse(outputString.contains("Test Title 3"));
-		
+
 	}
 
 }
 
-// *** END CODE ***//
+// **END */
